@@ -1,5 +1,7 @@
 package Server;
 
+import javafx.scene.input.KeyCode;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Timer;
@@ -8,8 +10,8 @@ import java.util.TimerTask;
 public class Game extends Thread {
     Socket player1;
     Socket player2;
-    PrintStream player1Output;
-    PrintStream player2Output;
+    ObjectOutputStream player1Output;
+    ObjectOutputStream player2Output;
     ObjectInputStream player1Input;
     ObjectInputStream player2Input;
     InputController player1InputController;
@@ -25,17 +27,30 @@ public class Game extends Thread {
 
     public void run(){
         try {
-            player1Output=new PrintStream(player1.getOutputStream());
-            player2Output=new PrintStream(player2.getOutputStream());
+            //IO complete
+            player1Output=new ObjectOutputStream(player1.getOutputStream());
+            player2Output=new ObjectOutputStream(player2.getOutputStream());
             player1Input=new ObjectInputStream(player1.getInputStream());
             player2Input=new ObjectInputStream(player2.getInputStream());
+            //notify players
+            player1Output.writeObject("StartGameAsPlayer1");
+            player2Output.writeObject("StartGameAsPlayer2");
+            //getSnake
+            Object snake1=player1Input.readObject();
+            Object snake2=player2Input.readObject();
+            if(snake1.getClass().equals(snake2.getClass())){
+                player1Output.writeObject("sameSnake");
+                player2Output.writeObject("sameSnake");
+            }
+            else {
+                player1Output.writeObject("differentSnake");
+                player2Output.writeObject("differentSnake");
+                player1Output.writeObject(snake2);
+                player2Output.writeObject(snake1);
+            }
             gameCenter=new GameCenter();
-            player1Output.println("StartGameAsPlayer1");
-            player2Output.println("StartGameAsPlayer2");
-            player1Output.flush();
-            player2Output.flush();
-            player1InputController=new InputController(player1Input);
-            player2InputController=new InputController(player2Input);
+            player1InputController=new InputController(player1Input, KeyCode.DOWN);
+            player2InputController=new InputController(player2Input, KeyCode.UP);
             GameTimer=new Timer(true);
             GameTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
@@ -43,12 +58,27 @@ public class Game extends Thread {
                     GameUpdate();
                 }
             },0,1);
-        } catch (IOException ioException) {
+        } catch (IOException | ClassNotFoundException ioException) {
             ioException.printStackTrace();
+            GameTimer.cancel();
+            try {
+                player1.close();
+                player2.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void GameUpdate(){
+        //Snakes Move
+
+
+        //Event Listen
+
+
+        //Render
+
 
     }
 }

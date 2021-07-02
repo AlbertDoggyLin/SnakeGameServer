@@ -1,9 +1,6 @@
 package Server;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 
 public class Waiter extends Thread {
@@ -14,5 +11,21 @@ public class Waiter extends Thread {
     }
     @Override
     public void run(){
+        ObjectInputStream inputStream;
+        try {
+            inputStream=new ObjectInputStream(waiter.getInputStream());
+            while(true){
+                try {
+                    if(inputStream.readObject().toString().equals("disconnect")){
+                        waiter.close();
+                        break;
+                    }
+                } catch (IOException | ClassNotFoundException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
     }
 }
