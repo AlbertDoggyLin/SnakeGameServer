@@ -10,15 +10,15 @@ public class serverStart{
     public static void main(String[] args) throws IOException {
         ServerSocket m_serverSocket=new ServerSocket(8787);
         while(true){
-            Socket player1 = m_serverSocket.accept();
+            SocketIOPackage player1 = new SocketIOPackage(m_serverSocket.accept());
             Waiter waiter1 = new Waiter(player1);
-            Socket player2 = m_serverSocket.accept();
+            SocketIOPackage player2 = new SocketIOPackage(m_serverSocket.accept());
             Waiter waiter2 = new Waiter(player2);
-            while(player1.isClosed()){
-                player1=m_serverSocket.accept();
+            while(player1.socket.isClosed()){
+                player1=new SocketIOPackage(m_serverSocket.accept());
                 waiter1 = new Waiter(player1);
-                if(player2.isClosed()){
-                    player2=m_serverSocket.accept();
+                if(player2.socket.isClosed()){
+                    player2=new SocketIOPackage(m_serverSocket.accept());
                 }
                 waiter2 = new Waiter(player2);
             }

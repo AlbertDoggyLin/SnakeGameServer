@@ -1,20 +1,16 @@
 package SnakeGame.Enum;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Point {
-  private int x;
-  private int y;
+public class Point implements Serializable {
+  private static final long serialVersionUID = -1092863509347829L;
+  private final int x;
+  private final int y;
   private static int windowWidth = 600;
   public static int GridWidth = 20;
   public Point(int x, int y){
     this.x = x;
-    this.y = y;
-  }
-  public void setX(int x){
-    this.x = x;
-  } 
-  public void setY(int y) {
     this.y = y;
   }
   public int getX() {
@@ -23,13 +19,7 @@ public class Point {
   public int getY() {
     return y;
   }
-  public int getGridX() {
-    return x*GridWidth;
-  }
-  public int getGridY() {
-    return y * GridWidth;
-  }
-  public static Point getrandompointGrid(){
+  public static Point getRandomPointGrid(){
     Random RandomPoint = new Random();
     int x = RandomPoint.nextInt(windowWidth / GridWidth);
     int y = RandomPoint.nextInt(windowWidth / GridWidth);

@@ -9,15 +9,11 @@ import java.io.Serializable;
 
 public abstract class Snake implements Serializable {
   public static final int SnakeWidth = Point.GridWidth;
-  protected Rectangle body ;
-  protected Point position ; 
-  protected Image image ;
+  protected transient Rectangle body ;
+  protected volatile Point position ;
+  protected transient Image image ;
   public abstract void InitialSnakeBody(Point position);
   public void ChangPosition(Point newPosition){
-    this.position.setX(newPosition.getX());
-    this.position.setY(newPosition.getY());
-    this.body.setX(newPosition.getX());
-    this.body.setY(newPosition.getY());
   }
   public void SetColor(Color color){
     body.setFill(color);

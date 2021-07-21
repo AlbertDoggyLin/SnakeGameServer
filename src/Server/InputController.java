@@ -1,13 +1,13 @@
 package Server;
 
+import SnakeGame.Enum.Direction;
 import javafx.scene.input.KeyCode;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.LinkedList;
 
 public class InputController extends Thread {
-    private ObjectInputStream inputStream;
+    private SocketIOPackage ioPackage;
     private LinkedList<Direction> directionList;
     private KeyCode lastDirection;
     public boolean canFire;
@@ -15,8 +15,8 @@ public class InputController extends Thread {
         return directionList.poll();
     }
 
-    public InputController(ObjectInputStream input, KeyCode firstDirection) {
-        inputStream = input;
+    public InputController(SocketIOPackage input, KeyCode firstDirection) {
+        ioPackage = input;
         directionList = new LinkedList<>();
         lastDirection = firstDirection;
         canFire = false;
@@ -26,9 +26,9 @@ public class InputController extends Thread {
     public void run() {
         while (true) {
             try {
-                Object tem = inputStream.readObject();
-                if (tem.toString().equals("dieconnect"))break;
-                KeyCode in = (KeyCode) inputStream.readObject();
+                Object tem = ioPackage.read();
+                if (tem.toString().equals("disconnect"))break;
+                KeyCode in = (KeyCode) ioPackage.read();
                 if (in == null) break;
                 else {
                     switch (in) {

@@ -4,27 +4,20 @@ import java.io.*;
 import java.net.Socket;
 
 public class Waiter extends Thread {
-    private Socket waiter;
-    public Waiter(Socket player){
-        waiter=player;
+    private SocketIOPackage player;
+
+    public Waiter(SocketIOPackage player) {
+        this.player = player;
         start();
     }
+
     @Override
-    public void run(){
-        ObjectInputStream inputStream;
+    public void run() {
         try {
-            inputStream=new ObjectInputStream(waiter.getInputStream());
-            while(true){
-                try {
-                    if(inputStream.readObject().toString().equals("disconnect")){
-                        waiter.close();
-                        break;
-                    }
-                } catch (IOException | ClassNotFoundException ioException) {
-                    ioException.printStackTrace();
-                }
+            if (player.read().toString().equals("disconnect")) {
+                player.socket.close();
             }
-        } catch (IOException ioException) {
+        } catch (IOException | ClassNotFoundException ioException) {
             ioException.printStackTrace();
         }
     }
